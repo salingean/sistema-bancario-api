@@ -1,19 +1,22 @@
 # 💳 Sistema Bancário API
 
-API REST desenvolvida com Java e Spring Boot para gerenciamento de contas bancárias e transferências entre contas.
+API REST desenvolvida com Java 21 e Spring Boot para gerenciamento de contas bancárias e transferências entre contas.
 
-O projeto simula operações bancárias reais, aplicando regras de negócio, validações, tratamento global de exceções e persistência de dados com PostgreSQL.
+O projeto simula operações bancárias reais, aplicando regras de negócio, persistência de dados com PostgreSQL, autenticação via JWT, documentação com Swagger/OpenAPI e tratamento global de exceções.
 
 ---
 
 ## 🚀 Tecnologias Utilizadas
 
-- Java 26
+- Java 21 (LTS)
 - Spring Boot
 - Spring Web
 - Spring Data JPA
+- Spring Security
 - Hibernate
 - PostgreSQL
+- JWT (JSON Web Token)
+- Swagger/OpenAPI (SpringDoc)
 - Bean Validation
 - Maven
 - Lombok
@@ -39,6 +42,13 @@ O projeto simula operações bancárias reais, aplicando regras de negócio, val
 - Impedir transferências com saldo insuficiente
 - Impedir operações em contas bloqueadas
 - Registrar histórico de transações
+
+### Segurança
+
+- Autenticação com JWT
+- Proteção de endpoints com Spring Security
+- Geração de token de acesso
+- Validação automática de tokens em requisições autenticadas
 
 ### Tratamento de Erros
 
@@ -94,9 +104,12 @@ src
  └── main
       ├── controller
       ├── service
+      ├── security
       ├── repository
       ├── entity
       ├── dto
+      ├── config
+      ├── mapper
       ├── exception
       │     └── handler
       └── resources
@@ -104,7 +117,67 @@ src
 
 ---
 
+## 🔐 Autenticação JWT
+
+A API utiliza autenticação baseada em JSON Web Token (JWT).
+
+### Login
+
+```http
+POST /auth/login
+```
+
+#### Exemplo
+
+```text
+username=admin
+password=123
+```
+
+#### Resposta
+
+```text
+eyJhbGciOiJIUzI1NiJ9...
+```
+
+### Utilizando o Token
+
+Após obter o token, envie-o no header Authorization:
+
+```http
+Authorization: Bearer SEU_TOKEN
+```
+
+Todos os endpoints da API, exceto os de autenticação e documentação, exigem um token JWT válido.
+
+---
+
+## 📚 Documentação da API
+
+A documentação interativa está disponível através do Swagger UI.
+
+Após iniciar a aplicação, acesse:
+
+```text
+http://localhost:8080/swagger-ui/index.html
+```
+
+O Swagger permite:
+
+- Visualizar todos os endpoints
+- Testar requisições diretamente pelo navegador
+- Consultar exemplos de requests e responses
+- Autenticar utilizando JWT através do botão "Authorize"
+
+---
+
 ## 📌 Endpoints
+
+### Login
+
+```http
+POST /auth/login
+```
 
 ### Criar Conta
 
@@ -134,15 +207,11 @@ POST /accounts
 }
 ```
 
----
-
 ### Buscar Conta por ID
 
 ```http
 GET /accounts/{id}
 ```
-
----
 
 ### Listar Todas as Contas
 
@@ -150,15 +219,11 @@ GET /accounts/{id}
 GET /accounts
 ```
 
----
-
 ### Consultar Saldo
 
 ```http
 GET /accounts/{id}/balance
 ```
-
----
 
 ### Bloquear Conta
 
@@ -166,15 +231,11 @@ GET /accounts/{id}/balance
 PATCH /accounts/{id}/block
 ```
 
----
-
 ### Listar Contas Bloqueadas
 
 ```http
 GET /accounts/status/blocked
 ```
-
----
 
 ### Transferência
 
@@ -241,9 +302,11 @@ CREATE DATABASE sistema_bancario;
 Configure suas credenciais no arquivo `application.properties`:
 
 ```properties
-spring.datasource.url=jdbc:postgresql://localhost:5432/sistema_bancario
+spring.datasource.url=jdbc:postgresql://localhost:5432/YOUR_DATABASE
 spring.datasource.username=YOUR_USERNAME
 spring.datasource.password=YOUR_PASSWORD
+
+jwt.secret=YOUR_JWT_SECRET
 ```
 
 ---
@@ -253,7 +316,7 @@ spring.datasource.password=YOUR_PASSWORD
 ### 1. Clonar o repositório
 
 ```bash
-git clone https://github.com/SEU-USUARIO/sistema-bancario.git
+git clone https://github.com/salingean/sistema-bancario.git
 ```
 
 ### 2. Entrar na pasta
@@ -264,25 +327,27 @@ cd sistema-bancario
 
 ### 3. Configurar o PostgreSQL
 
-Crie o banco:
-
 ```sql
 CREATE DATABASE sistema_bancario;
 ```
 
-Atualize as credenciais no arquivo:
+### 4. Configurar o application.properties
 
 ```properties
-application.properties
+spring.datasource.url=jdbc:postgresql://localhost:5432/YOUR_DATABASE
+spring.datasource.username=YOUR_USERNAME
+spring.datasource.password=YOUR_PASSWORD
+
+jwt.secret=YOUR_JWT_SECRET
 ```
 
-### 4. Executar o projeto
+### 5. Executar o projeto
 
 ```bash
 mvn spring-boot:run
 ```
 
-ou execute diretamente pela sua IDE.
+Ou execute diretamente pela sua IDE.
 
 ---
 
@@ -291,12 +356,16 @@ ou execute diretamente pela sua IDE.
 - Programação Orientada a Objetos (POO)
 - APIs REST
 - Spring Boot
+- Spring Security
+- JWT Authentication
 - Injeção de Dependência
 - Spring Data JPA
 - Hibernate
 - PostgreSQL
 - Bean Validation
 - DTO Pattern
+- OpenAPI / Swagger
+- Filtros de Segurança
 - Tratamento Global de Exceções
 - Transações com `@Transactional`
 - Arquitetura em Camadas
@@ -305,4 +374,4 @@ ou execute diretamente pela sua IDE.
 
 ## 👨‍💻 Autor
 
-Desenvolvido por **Salin Gean** como projeto de estudo para aprofundamento em Java, Spring Boot e desenvolvimento de APIs REST.
+Desenvolvido por **Salin Gean** como projeto de estudo para aprofundamento em Java, Spring Boot, Spring Security, autenticação JWT e desenvolvimento de APIs REST.
